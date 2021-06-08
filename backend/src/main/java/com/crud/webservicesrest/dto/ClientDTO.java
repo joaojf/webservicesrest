@@ -1,18 +1,16 @@
-package com.crud.webservicesrest.entities;
+package com.crud.webservicesrest.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "tb_client")
-public class Client implements Serializable {
+import com.crud.webservicesrest.entities.Client;
+
+public class ClientDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -27,9 +25,9 @@ public class Client implements Serializable {
 	private Instant birhtDate;
 	private Integer children;
 
-	public Client() {}
+	public ClientDTO() {}
 
-	public Client(Long id, String name, String cpf, Double income, Instant birhtDate, Integer children) {
+	public ClientDTO(Long id, String name, String cpf, Double income, Instant birhtDate, Integer children) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -37,6 +35,15 @@ public class Client implements Serializable {
 		this.income = income;
 		this.birhtDate = birhtDate;
 		this.children = children;
+	}
+	
+	public ClientDTO(Client client) {
+		this.id = client.getId();
+		this.name = client.getName();
+		this.cpf = client.getCpf();
+		this.income = client.getIncome();
+		this.birhtDate = client.getBirhtDate();
+		this.children = client.getChildren();
 	}
 
 	public Long getId() {
@@ -71,10 +78,6 @@ public class Client implements Serializable {
 		this.income = income;
 	}
 
-	public Instant getBirhtDate() {
-		return birhtDate;
-	}
-
 	public Integer getChildren() {
 		return children;
 	}
@@ -83,29 +86,10 @@ public class Client implements Serializable {
 		this.children = children;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+	public Instant getBirhtDate() {
+		return birhtDate;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Client other = (Client) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+	
+	
 
 }
