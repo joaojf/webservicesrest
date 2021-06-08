@@ -1,6 +1,7 @@
 package com.crud.webservicesrest.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crud.webservicesrest.dto.ClientDTO;
 import com.crud.webservicesrest.entities.Client;
 import com.crud.webservicesrest.repositories.ClientRepository;
+import com.crud.webservicesrest.services.exceptions.EntityNotFoundException;
 
 @Service
 public class ClientService {
@@ -21,6 +23,13 @@ public class ClientService {
 	public List<ClientDTO> findAll() {
 		List<Client> list = repositoryClient.findAll();
 		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public ClientDTO findById(Long id) {
+		Optional<Client> obj = repositoryClient.findById(id);
+		Client client = obj.orElseThrow(() -> new EntityNotFoundException("Client not found"));
+		return new ClientDTO(client);
 	}
 
 }
