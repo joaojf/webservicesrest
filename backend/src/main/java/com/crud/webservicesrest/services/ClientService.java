@@ -1,12 +1,13 @@
 package com.crud.webservicesrest.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +23,9 @@ public class ClientService {
 	private ClientRepository repositoryClient;
 	
 	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll() {
-		List<Client> list = repositoryClient.findAll();
-		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Client> list = repositoryClient.findAll(pageRequest);
+		return list.map(x -> new ClientDTO(x));
 	}
 
 	@Transactional(readOnly = true)
@@ -58,6 +59,14 @@ public class ClientService {
 			client = repositoryClient.save(client);
 			return new ClientDTO(client);
 		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id not found " + id);
+		}
+	}
+
+	public void delete(Long id) {
+		try {
+			repositoryClient.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found " + id);
 		}
 	}
